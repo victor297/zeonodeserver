@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Streaming Client</title>
+</head>
+<body>
+  <h1>Audio Streaming Client</h1>
+  <audio controls autoplay id="audioPlayer"></audio>
+  <button id="startButton">Start Playback</button> <!-- Add a button to start playback -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+  <script>
+    const socket = io(); // Assuming you're using socket.io-client library
+
+    const audioPlayer = document.getElementById('audioPlayer');
+    const startButton = document.getElementById('startButton'); // Get reference to the start button
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit("userConnected", { username: "victor296", deviceId: "hdjeieiiiii" });
+    });
+
+    socket.on('audioChunk', (audioChunk) => {
+      console.log("audioChunk", audioChunk);
+
+      // Convert base64 audio chunk to ArrayBuffer
+      const buffer = Uint8Array.from(atob(audioChunk), c => c.charCodeAt(0)).buffer;
+
+      // Create a Blob from the ArrayBuffer
+      const blob = new Blob([buffer], { type: 'audio/3gpp' }); // Set the correct MIME type for 3GP
+
+
+
+
+    
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    // Function to start audio playback after user interaction
+    startButton.addEventListener('click', () => {
+      audioPlayer.children[audioPlayer.children.length - 1].play(); // Start playing the last appended audio element
+      startButton.disabled = true; // Disable the start button after playback starts
+    });
+  </script>
+</body>
+</html>
