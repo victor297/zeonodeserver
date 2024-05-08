@@ -21,6 +21,7 @@ app.get("/api", (req, res) => {
 
 // Maintain a map of all devices and currently connected devices for each email
 const connectedDevices = {};
+var currentDeviceId = {};
 
 socketIO.on("connection", (socket) => {
   console.log(`${socket.id} user is just connected`);
@@ -48,6 +49,9 @@ socketIO.on("connection", (socket) => {
   // used to sync pc with mobile
   socket.on("userConnected", ({ deviceId }) => {
     socket.join(deviceId);
+    console.log("called", deviceId);
+    currentDeviceId[socket.id] = [deviceId];
+    console.log("currentDeviceId", currentDeviceId);
     const users = socketIO.sockets.adapter.rooms.get(deviceId)?.size;
     console.log("number of user in the room", users);
     if (users === 2) {
@@ -63,11 +67,17 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    var id = 0;
+    if (currentDeviceId[socket.id]) {
+      id = currentDeviceId[socket.id][0];
+    }
+    console.log("User id:", id);
     Object.keys(connectedDevices).forEach((email) => {
       connectedDevices[email] = connectedDevices[email].filter(
-        (deviceId) => deviceId !== deviceId
+        (deviceId) => deviceId !== id
       );
-      socketIO.to(email).emit("connectedDevices", connectedDevices[email]);
+      socketIO.to(email).emit("activePcs", connectedDevices[email]);
+      console.log("user remaining", connectedDevices[email]);
       console.log("user disconnected");
     });
   });
