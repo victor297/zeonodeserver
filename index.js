@@ -63,6 +63,7 @@ socketIO.on("connection", (socket) => {
   });
   // when subscribed recipe
   socket.on("audioData", ({ audioChunk, deviceId }) => {
+    console.log("deviceIdforchunk", deviceId)
     socketIO.to(deviceId).emit("audioChunk", audioChunk);
   });
 
