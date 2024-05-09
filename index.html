@@ -19,7 +19,8 @@
 
     socket.on('connect', () => {
       console.log('Connected to server');
-      socket.emit("userConnected", { username: "victor296", deviceId: "hdjeieiiiii" });
+      socket.emit("activeUser", { email: "davidvictor297@gmail.com", deviceId: "c9b258c57d5f405cdfe50ecc5c68c44ba107907fa24150405aad62c47feb9916" });
+      socket.emit("userConnected", { deviceId: "c9b258c57d5f405cdfe50ecc5c68c44ba107907fa24150405aad62c47feb9916" });
     });
 
     socket.on('audioChunk', (audioChunk) => {
