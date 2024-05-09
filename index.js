@@ -14,7 +14,10 @@ const PORT = 4000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-
+app.get("/", (req, res) => {
+  console.log("req", req.user);
+  res.send("Server Started");
+});
 app.get("/api", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
